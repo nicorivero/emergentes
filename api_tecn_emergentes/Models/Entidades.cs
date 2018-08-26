@@ -6,18 +6,18 @@ namespace api_tecn_emergentes.Models
 {
     public class Entidades
     {
-        public ObjectId id { get; set; }
         [BsonElement("_id")]
-        public int id_entidad { get; set; }
+        public ObjectId id { get; set; }
         [BsonElement("id_entidad")]
-        public string nombre { get; set; }
+        public int id_entidad { get; set; }
         [BsonElement("nombre")]
-        public List<Reactor> reactores { get; set; }
+        public string nombre { get; set; }
         [BsonElement("reactores")]
-        public Temperature temp { get; set; }
+        public List<Reactor> reactores { get; set; }
         [BsonElement("temp")]
-        public Humidity hum { get; set; }
+        public Temperature temp { get; set; }
         [BsonElement("hum")]
+        public Humidity hum { get; set; }
     }
 
     public class Reactor
