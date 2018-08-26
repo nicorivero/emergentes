@@ -12,6 +12,7 @@ namespace api_tecn_emergentes.Controllers
         public void GetParameters(string id_entity)
         {
             DataAccess data = new DataAccess();
+
             
         }
 
