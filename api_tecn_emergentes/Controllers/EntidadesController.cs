@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api_tecn_emergentes.Models;
+using api_tecn_emergentes.Auxiliar;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace api_tecn_emergentes.Controllers
 {
@@ -18,9 +21,10 @@ namespace api_tecn_emergentes.Controllers
         
         //Obtener toda la informacion de una entidad
         [HttpGet("id={_id_entity}")]
-        public BsonDocument Get(int _id_entity)
+        public JObject Get(int _id_entity)
         {
-            return data.GetDocument("id_entidad", _id_entity, "Entidades");
+            var document = data.GetDocsWithProjection("Entidades", new string[] { "_id"}, "id_entidad", _id_entity).First().ToJson();
+            return JObject.Parse(document);
         }
 
         //Eliminar una entidad
@@ -29,12 +33,27 @@ namespace api_tecn_emergentes.Controllers
         {
             return data.DeleteDocument("Entidades", "id_entidad", _id_entity);
         }
+        
         //Cargar una nueva entidad
         [HttpPost]
-        public string Nuevo()
+        public string Crear([FromBody] EntidadSimple e)
         {
+            Auxiliar.auxiliar_testing aux = new auxiliar_testing();
             Entidades e1 = new Entidades();
-            return data.InsertDocument("Entidades",e1.ToBsonDocument());
+            e1.reactores = new List<Reactor>();
+            e1.temp = new Temperature();
+            e1.hum = new Humidity();
+
+            e1.id_entidad = aux.CalcularId();
+            e1.nombre = e.nombre;
+            e1.reactores.Add(new Reactor() { tipo = "Riego", estado = false });
+            e1.reactores.Add(new Reactor() { tipo = "Climatizador", estado = false });
+            e1.temp.max = e.temp_max;
+            e1.temp.min = e.temp_min;
+            e1.hum.max = e.hum_max;
+            e1.hum.min = e.hum_min;
+            string response = data.InsertDocument("Entidades",e1.ToBsonDocument());
+            return response + e1.id_entidad.ToString();
         }
     }
 

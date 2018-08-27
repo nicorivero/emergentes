@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using api_tecn_emergentes.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -15,22 +14,23 @@ namespace api_tecn_emergentes.Controllers
 
         //Obtener Parametros Cargados
         [HttpGet("id={_id_entity}")]
-        public BsonDocument GetParameters(int _id_entity)
+        public Newtonsoft.Json.Linq.JObject GetParameters(int _id_entity)
         {
             var result = data.GetDocsWithProjection("Entidades", new string[] { "_id", "reactores" }, "id_entidad", _id_entity);
-            return result.First();
+            var jsonresult = Newtonsoft.Json.Linq.JObject.Parse(result.First().ToJson());
+            return jsonresult;
         }
         //Actualizacion de Parametros de Temperatura/Humedad
         #region UpdateParameters
-        [HttpPut]
-        public void UpdateTemp()
+        [HttpPut("id={id_entity}+tmax={temp_min}+tmin={temp_max}")]
+        public void ActualizarTemperatura(int id_entity, double tmax, double tmin)
         {
-
+            //Revisar Metodo Update de clase DataAccess.
         }
-        [HttpPut]
-        public void UpdateHum()
+        [HttpPut("id={id_entity}+hmax={hum_min}+hmin={hum_max}")]
+        public void ActualizarHumedad(int id_entity, double hmax, double hmin)
         {
-
+            //Revisar Metodo Update de clase DataAccess.
         }
         #endregion
     }

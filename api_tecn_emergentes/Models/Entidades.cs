@@ -22,8 +22,8 @@ namespace api_tecn_emergentes.Models
 
     public class Reactor
     {
-        public string type { get; set; }
-        public bool state { get; set; }
+        public string tipo { get; set; }
+        public bool estado { get; set; }
     }
     public class Temperature
     {
@@ -35,4 +35,6 @@ namespace api_tecn_emergentes.Models
         public double min { get; set; }
         public double max { get; set; }
     }
+
+
 }
