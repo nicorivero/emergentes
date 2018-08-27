@@ -11,7 +11,7 @@ namespace api_tecn_emergentes.Controllers
     public class SensoresController : Controller
     {
         [HttpGet("id={_id_entity}")]
-        public BsonDocument GetParameters(string _id_entity)
+        public BsonDocument GetParameters(int _id_entity)
         {
             DataAccess data = new DataAccess();
             return data.GetDocument("id_entidad", _id_entity, "Entidades");
