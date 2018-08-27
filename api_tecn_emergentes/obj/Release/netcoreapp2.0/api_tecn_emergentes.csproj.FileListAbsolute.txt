@@ -1,0 +1,11 @@
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\bin\Release\netcoreapp2.0\api_tecn_emergentes.deps.json
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\bin\Release\netcoreapp2.0\api_tecn_emergentes.runtimeconfig.json
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\bin\Release\netcoreapp2.0\api_tecn_emergentes.runtimeconfig.dev.json
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\bin\Release\netcoreapp2.0\api_tecn_emergentes.dll
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\bin\Release\netcoreapp2.0\api_tecn_emergentes.pdb
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Release\netcoreapp2.0\api_tecn_emergentes.csprojAssemblyReference.cache
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Release\netcoreapp2.0\api_tecn_emergentes.csproj.CoreCompileInputs.cache
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Release\netcoreapp2.0\api_tecn_emergentes.AssemblyInfoInputs.cache
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Release\netcoreapp2.0\api_tecn_emergentes.AssemblyInfo.cs
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Release\netcoreapp2.0\api_tecn_emergentes.dll
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Release\netcoreapp2.0\api_tecn_emergentes.pdb

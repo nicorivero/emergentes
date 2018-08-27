@@ -36,9 +36,32 @@ namespace api_tecn_emergentes.Models
         public BsonDocument GetDocument(string _field, int _value, string _collection_name)
         {
             var filter = Builders<BsonDocument>.Filter.Eq(_field, _value);
-            var doc = GetCollection(_collection_name).Find(new BsonDocument()).ToList();
             var document = GetCollection(_collection_name).Find(filter).First();
             return document;
+        }
+
+        public List<BsonDocument> GetDocsWithProjection(string _collectionName, string[] _ignoreFields, string _filterField = "", int _filterValue = -1)
+        {
+            var projection = Builders<BsonDocument>.Projection.Exclude("_id");
+            IMongoCollection<BsonDocument> collection = GetCollection(_collectionName);
+
+            foreach (string field in _ignoreFields)
+            {
+                projection = projection.Exclude(field);
+            }
+            if (_filterField != "" && _filterValue != -1)
+            {
+                var filter = Builders<BsonDocument>.Filter.Eq(_filterField, _filterValue);
+                var resultList = new List<BsonDocument>();
+                var doc = collection.Find(filter).Project(projection).First();
+                resultList.Add(collection.Find(filter).Project(projection).First());
+                return resultList;
+            }
+            else
+            {
+                var resultDocs = collection.Find(new BsonDocument()).Project(projection).ToList();
+                return resultDocs;
+            }
         }
 
         //Metodo para insertar una nueva entidad, no se insertan nuevos "parametros", solo entidades completas.
