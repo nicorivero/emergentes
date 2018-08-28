@@ -27,6 +27,20 @@ namespace api_tecn_emergentes.Controllers
             return JObject.Parse(document);
         }
 
+        //Metodo que devuelve como resultado una lista de todas las entidades dadas de alta
+        [HttpGet]
+        public List<JObject> Todos()
+        {
+            List<BsonDocument> _bsonlist = data.GetDocsWithProjection("Entidades", new string[] { "_id" });
+            List<JObject> _formattedList = new List<JObject>();
+            foreach (BsonDocument _bdoc in _bsonlist)
+            {
+                JObject jdoc = JObject.Parse(_bdoc.ToJson());
+                _formattedList.Add(jdoc);
+            }
+            return _formattedList;
+        }
+
         //Eliminar una entidad
         [HttpDelete("id={_id_entity}")]
         public string Eliminar (int _id_entity)
