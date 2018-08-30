@@ -17,6 +17,7 @@ namespace api_tecn_emergentes.Controllers
         DataAccess data = new DataAccess();
 
         [HttpPost]
+        
         public string Insertar([FromBody] Lecturas _lectura)
         {
             string response = data.InsertDocument("Lecturas", _lectura.ToBsonDocument());
