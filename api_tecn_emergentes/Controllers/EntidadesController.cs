@@ -55,17 +55,18 @@ namespace api_tecn_emergentes.Controllers
             Auxiliar.auxiliar_testing aux = new auxiliar_testing();
             Entidades e1 = new Entidades();
             e1.reactores = new List<Reactor>();
-            e1.temp = new Temperature();
-            e1.hum = new Humidity();
+            e1.sensores = new Sensor();
+            e1.sensores.temp = new Temperature();
+            e1.sensores.hum = new Humidity();
 
             e1.id_entidad = aux.CalcularId();
             e1.nombre = e.nombre;
             e1.reactores.Add(new Reactor() { tipo = "Riego", estado = false });
             e1.reactores.Add(new Reactor() { tipo = "Climatizador", estado = false });
-            e1.temp.max = e.temp_max;
-            e1.temp.min = e.temp_min;
-            e1.hum.max = e.hum_max;
-            e1.hum.min = e.hum_min;
+            e1.sensores.temp.max = e.temp_max;
+            e1.sensores.temp.min = e.temp_min;
+            e1.sensores.hum.max = e.hum_max;
+            e1.sensores.hum.min = e.hum_min;
             string response = data.InsertDocument("Entidades",e1.ToBsonDocument());
             return response + e1.id_entidad.ToString();
         }
