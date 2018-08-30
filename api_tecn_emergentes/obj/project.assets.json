@@ -14077,30 +14077,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nicol\\.nuget\\packages\\": {},
+    "C:\\Users\\Carla\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Projects\\Repositories\\emergentes\\api_tecn_emergentes\\api_tecn_emergentes.csproj",
+      "projectUniqueName": "c:\\Users\\Carla\\emergentes\\api_tecn_emergentes\\api_tecn_emergentes.csproj",
       "projectName": "api_tecn_emergentes",
-      "projectPath": "E:\\Projects\\Repositories\\emergentes\\api_tecn_emergentes\\api_tecn_emergentes.csproj",
-      "packagesPath": "C:\\Users\\nicol\\.nuget\\packages\\",
-      "outputPath": "E:\\Projects\\Repositories\\emergentes\\api_tecn_emergentes\\obj\\",
+      "projectPath": "c:\\Users\\Carla\\emergentes\\api_tecn_emergentes\\api_tecn_emergentes.csproj",
+      "packagesPath": "C:\\Users\\Carla\\.nuget\\packages\\",
+      "outputPath": "c:\\Users\\Carla\\emergentes\\api_tecn_emergentes\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\nicol\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Carla\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

@@ -29,7 +29,7 @@ namespace api_tecn_emergentes.Controllers
         {
             List<BsonDocument> _listaBson = new List<BsonDocument>();
             List<JObject> _formattedList = new List<JObject>();
-            _listaBson = data.GetAllDocuments("Lecturas");
+            _listaBson = data.GetDocsWithProjection("Lecturas", new string[]{"_id"});
             foreach(BsonDocument _bdoc in _listaBson)
             {
                 JObject jdoc = JObject.Parse(_bdoc.ToJson());
@@ -38,11 +38,17 @@ namespace api_tecn_emergentes.Controllers
             return _formattedList;
         }
 
-        //[HttpGet("{id_entity}")]
-        //public List<JObject> Consultar(int id_entity)
-        //{
-        //    //data.GetDocument("id", id_entity, "Lecturas");
-        //    //return 
-        //}
+        [HttpGet("{id_entity}")]
+        public List<JObject> Consultar(int id_entity)
+        {
+            List<BsonDocument> _listaBson = data.GetDocsWithProjection("Lecturas", new string[]{"_id"}, "id_entidad", id_entity);
+            List<JObject> _formattedList = new List<JObject>();
+            foreach(BsonDocument _bdoc in _listaBson)
+            {
+                JObject jdoc = JObject.Parse(_bdoc.ToJson());
+                _formattedList.Add(jdoc);
+            }
+            return _formattedList;
+        }
     }
 }
