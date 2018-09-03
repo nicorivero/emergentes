@@ -14,11 +14,8 @@ namespace api_tecn_emergentes.Models
         public string nombre { get; set; }
         [BsonElement("reactores")]
         public List<Reactor> reactores { get; set; }
-        
-        [BsonElement("temp")]
-        public Temperature temp { get; set; }
-        [BsonElement("hum")]
-        public Humidity hum { get; set; }
+        [BsonElement("sensores")]
+        public Sensor sensores { get; set; }
     }
 
     public class Reactor
@@ -26,6 +23,12 @@ namespace api_tecn_emergentes.Models
         public string tipo { get; set; }
         public bool estado { get; set; }
     }
+    public class Sensor
+    {
+        public Temperature temp { get; set; }
+        public Humidity hum { get; set; }
+    }
+
     public class Temperature
     {
         public double min { get; set; }
