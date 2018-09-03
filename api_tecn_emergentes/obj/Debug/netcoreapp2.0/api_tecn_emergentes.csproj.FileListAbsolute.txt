@@ -8,3 +8,4 @@ E:\Projects\Repositories\emergentes\api_tecn_emergentes\bin\Debug\netcoreapp2.0\
 E:\Projects\Repositories\emergentes\api_tecn_emergentes\bin\Debug\netcoreapp2.0\api_tecn_emergentes.pdb
 E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Debug\netcoreapp2.0\api_tecn_emergentes.dll
 E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Debug\netcoreapp2.0\api_tecn_emergentes.pdb
+E:\Projects\Repositories\emergentes\api_tecn_emergentes\obj\Debug\netcoreapp2.0\api_tecn_emergentes.csprojAssemblyReference.cache

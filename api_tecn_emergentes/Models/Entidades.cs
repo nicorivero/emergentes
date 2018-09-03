@@ -14,6 +14,7 @@ namespace api_tecn_emergentes.Models
         public string nombre { get; set; }
         [BsonElement("reactores")]
         public List<Reactor> reactores { get; set; }
+        
         [BsonElement("temp")]
         public Temperature temp { get; set; }
         [BsonElement("hum")]

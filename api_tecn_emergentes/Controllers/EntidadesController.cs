@@ -69,6 +69,12 @@ namespace api_tecn_emergentes.Controllers
             string response = data.InsertDocument("Entidades",e1.ToBsonDocument());
             return response + e1.id_entidad.ToString();
         }
+
+        [HttpPost]
+        public string Precarga([FromBody] Precarga _pre)
+        {
+            return data.InsertDocument("Pre-Entidades", _pre.ToBsonDocument());
+        }
     }
 
     
