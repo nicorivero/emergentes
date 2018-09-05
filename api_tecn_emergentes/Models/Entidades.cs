@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -20,11 +21,13 @@ namespace api_tecn_emergentes.Models
 
     public class Reactor
     {
+        public IPAddress ip_reactor { get; set; }
         public string tipo { get; set; }
         public bool estado { get; set; }
     }
     public class Sensor
     {
+        public IPAddress ip_sensor { get; set; }
         public Temperature temp { get; set; }
         public Humidity hum { get; set; }
     }

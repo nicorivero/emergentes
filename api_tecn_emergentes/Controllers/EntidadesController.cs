@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api_tecn_emergentes.Controllers;
 using api_tecn_emergentes.Models;
 using api_tecn_emergentes.Auxiliar;
 using Microsoft.AspNetCore.Http;
@@ -52,29 +53,26 @@ namespace api_tecn_emergentes.Controllers
         [HttpPost]
         public string Crear([FromBody] EntidadSimple e)
         {
-            Auxiliar.auxiliar_testing aux = new auxiliar_testing();
             Entidades e1 = new Entidades();
             e1.reactores = new List<Reactor>();
             e1.sensores = new Sensor();
             e1.sensores.temp = new Temperature();
             e1.sensores.hum = new Humidity();
 
-            e1.id_entidad = aux.CalcularId();
+            e1.id_entidad = e.id_precarga;
+            PrecargaController pre = new PrecargaController();
+            string mensaje = pre.Eliminar(e.id_precarga);
+
             e1.nombre = e.nombre;
-            e1.reactores.Add(new Reactor() { tipo = "Riego", estado = false });
-            e1.reactores.Add(new Reactor() { tipo = "Climatizador", estado = false });
+            e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Riego", estado = false });
+            e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Climatizador", estado = false });
+            e1.sensores.ip_sensor = e.ip_sensores;
             e1.sensores.temp.max = e.temp_max;
             e1.sensores.temp.min = e.temp_min;
             e1.sensores.hum.max = e.hum_max;
             e1.sensores.hum.min = e.hum_min;
             string response = data.InsertDocument("Entidades",e1.ToBsonDocument());
             return response + e1.id_entidad.ToString();
-        }
-
-        [HttpPost]
-        public string Precarga([FromBody] Precarga _pre)
-        {
-            return data.InsertDocument("Pre-Entidades", _pre.ToBsonDocument());
         }
     }
 
