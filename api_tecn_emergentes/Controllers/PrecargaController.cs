@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using api_tecn_emergentes.Models;
-using api_tecn_emergentes.Auxiliar;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace api_tecn_emergentes.Controllers
@@ -55,6 +50,4 @@ namespace api_tecn_emergentes.Controllers
             return data.InsertDocument("Pre-Entidades", _pre.ToBsonDocument());
         }
     }
-
-    
 }
