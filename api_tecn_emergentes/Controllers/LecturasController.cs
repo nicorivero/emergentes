@@ -20,6 +20,13 @@ namespace api_tecn_emergentes.Controllers
         
         public string Insertar([FromBody] Lecturas _lectura)
         {
+            //Update Ultimas-Lecturas
+            
+            //Activar/Desactivar Riego/Ventailacion
+            BsonDocument _docEntidad = data.GetDocsWithProjection("Entidades", new string[]{"_id"}, "id_entidad", _lectura.id_entidad).First();
+            List<BsonElement> lista =_docEntidad.Elements.ToList();
+            
+            //Grabar Lectura en Historico
             string response = data.InsertDocument("Lecturas", _lectura.ToBsonDocument());
             return response;
         }

@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace api_tecn_emergentes.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Precarga/[action]")]
+    [Route("api/Entidades/Precarga/[action]")]
     public class PrecargaController : Controller
     {
         private DataAccess data = new DataAccess();
@@ -22,11 +22,11 @@ namespace api_tecn_emergentes.Controllers
             return JObject.Parse(document);
         }
 
-        //Metodo que devuelve como resultado una lista de todas las pre-entidades dadas de alta
+        //Metodo que devuelve como resultado una lista de todas las pre-entidades pendientes de alta
         [HttpGet]
         public List<JObject> Todos()
         {
-            List<BsonDocument> _bsonlist = data.GetDocsWithProjection("Pre-Entidades", new string[] { "_id" });
+            List<BsonDocument> _bsonlist = data.GetDocumentsWithFilter("PreEntidades", "activo", false);
             List<JObject> _formattedList = new List<JObject>();
             foreach (BsonDocument _bdoc in _bsonlist)
             {
@@ -36,18 +36,26 @@ namespace api_tecn_emergentes.Controllers
             return _formattedList;
         }
 
-        //Eliminar una pre-entidad
-        [HttpDelete("id={_id_entity}")]
-        public string Eliminar (int _id_entity)
-        {
-            return data.DeleteDocument("Pre-Entidades", "id", _id_entity);
-        }
-        
-        //Cargar una nueva pre-entidad
+        //Eliminar una pre-entidad --Se cambia por el agregado de un campo de activacion con valor inicial false,
+        //con esto las placas no cargaran nuevamente la info al iniciar pues el registro ya existira,
+        //y por otro lado el frontend solo podra traer aquellas cuyo estado de activacion sea false, es decir
+        //pendientes de carga.
+          
+        //Cargar una nueva pre-entidad (Funcionando y probado).
         [HttpPost]
         public string Crear([FromBody] Precarga _pre)
         {
-            return data.InsertDocument("Pre-Entidades", _pre.ToBsonDocument());
+            var _value = data.GetDocument("id_entidad", _pre.id, "PreEntidades").Elements.ToList();
+            if (_value[0].Name == "code")
+            {
+                BsonElement _state = new BsonElement("activo",false);
+                var _result = _pre.ToBsonDocument().Add(_state);
+                return data.InsertDocument("PreEntidades", _result);
+            }
+            else
+            {
+                return "El objeto ya existe en la base de datos, se ignorara la solicitud";
+            }
         }
     }
 }

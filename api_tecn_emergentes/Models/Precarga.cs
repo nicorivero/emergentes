@@ -5,7 +5,7 @@ namespace api_tecn_emergentes.Controllers
     public class Precarga
     {
         public int id { get; set; }
-        public IPAddress ip_reactores { get; set; }
-        public IPAddress ip_sensores { get; set; }
+        public string ip_reactores { get; set; }
+        public string ip_sensores { get; set; }
     }
 }

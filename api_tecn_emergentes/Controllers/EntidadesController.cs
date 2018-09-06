@@ -61,12 +61,13 @@ namespace api_tecn_emergentes.Controllers
 
             e1.id_entidad = e.id_precarga;
             PrecargaController pre = new PrecargaController();
-            string mensaje = pre.Eliminar(e.id_precarga);
+            //string mensaje = pre.Eliminar(e.id_precarga);
 
             e1.nombre = e.nombre;
-            e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Riego", estado = false });
-            e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Climatizador", estado = false });
-            e1.sensores.ip_sensor = e.ip_sensores;
+            //REVISAR ESTO
+            // e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Riego", estado = false });
+            // e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Climatizador", estado = false });
+            // e1.sensores.ip_sensor = e.ip_sensores;
             e1.sensores.temp.max = e.temp_max;
             e1.sensores.temp.min = e.temp_min;
             e1.sensores.hum.max = e.hum_max;
