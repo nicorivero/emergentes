@@ -16,19 +16,15 @@ namespace api_tecn_emergentes.Controllers
     {
         signalr_hub hub = new signalr_hub();
         DataAccess data = new DataAccess();
+        api_tecn_emergentes.Models.RabbitMQ rq = new api_tecn_emergentes.Models.RabbitMQ();
 
-        //Inicialmente la notificacion se distribuye a todos los clientes y la toma quien precisa
-        private async void PushActivaRiego(bool _value)
-        {
-            if (_value) { await hub.EnviarMsj("TODOS", "{\"reactor\":\"riego\",\"valor\":true}"); }
+        private async void PushActivar(bool _value)
+        { 
+            if (_value) { rq.PostMessage("","message"); }
             else { await hub.EnviarMsj("TODOS", "{\"reactor\":\"riego\",\"valor\":false}"); }
         }
 
-        private async void PushActivaVentilacion(bool _value)
-        {
-            if (_value) { await hub.EnviarMsj("TODOS", "{\"reactor\":\"climatizacion\",\"valor\":true}"); }
-            else { await hub.EnviarMsj("TODOS", "{\"reactor\":\"climatizacion\",\"valor\":false}"); }
-        }
+        
         //Llamada para activar/desactivar riego desde front end
         [HttpPost("id={_id_entity}+valor={_value}")]
         public JObject Riego(int _id_entity, bool _value)

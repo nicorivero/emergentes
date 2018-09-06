@@ -14,7 +14,7 @@ namespace api_tecn_emergentes.Controllers
     {
         private DataAccess data = new DataAccess();
         
-        //Obtener toda la informacion de una entidad
+        //Obtener toda la informacion de las entidades
         [HttpGet]
         public List<JObject> Get()
         {
