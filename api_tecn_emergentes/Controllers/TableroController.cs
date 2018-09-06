@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using api_tecn_emergentes.Models;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
 
 namespace api_tecn_emergentes.Controllers
 {
@@ -14,8 +16,10 @@ namespace api_tecn_emergentes.Controllers
         
         //Obtener toda la informacion de una entidad
         [HttpGet]
-        public JObject Get()
+        public List<JObject> Get()
         {
+            List<JObject> list = new List<JObject>();
+            
             List<BsonDocument> _bsonLecturas = data.GetDocsWithProjection("Ultimas-Lecturas", new string[] { "_id" });
             List<JObject> _formattedLecturas = new List<JObject>();
             foreach (BsonDocument _bdoc in _bsonLecturas)
@@ -26,17 +30,17 @@ namespace api_tecn_emergentes.Controllers
             
             foreach (JObject _formatted in _formattedLecturas)
             {
-                int _id_entity = _formatted.SelectToken("id_entidad");
-                double temp = _formatted.SelectToken("temperatura");
-                double hum = _formatted.SelectToken("humedad");
+                int _id_entity = int.Parse(_formatted.SelectToken("id_entidad").ToString());
+                double temp = double.Parse(_formatted.SelectToken("temperatura").ToString());
+                double hum = double.Parse(_formatted.SelectToken("humedad").ToString());
 
-                var _document = data.GetDocsWithProjection("Parametros", new string[] { "_id"}, "id_entidad", _id_entity).First().ToJson();
+                var _document = data.GetDocsWithProjection("Parametros", new string[] { "_id"}, "id_entidad", _id_entity).ToJson();
                 JObject _doc = JObject.Parse(_document);
 
-                double tempMax = _doc.SelectToken("tempMax");
-                double tempMin = _doc.SelectToken("tempMin");
-                double humMax = _doc.SelectToken("humMax");
-                double humMin = _doc.SelectToken("humMin");
+                double tempMax = double.Parse(_doc.SelectToken("tempMax").ToString());
+                double tempMin = double.Parse(_doc.SelectToken("tempMin").ToString());
+                double humMax = double.Parse(_doc.SelectToken("humMax").ToString());
+                double humMin = double.Parse(_doc.SelectToken("humMin").ToString());
 
                 //Calculamos el color de la temperatura
                 int colorTemp = 0;
@@ -56,8 +60,11 @@ namespace api_tecn_emergentes.Controllers
                 else if (hum > humMax)
                     colorTemp = 5;
 
-                // id_entidad, datos de sensores, color 
+                JObject objeto = new JObject{{"id_entidad", _id_entity}, {"temperatura", temp}, {"humedad", hum}, {"colorTemp", colorTemp}, {"colorHum", colorHum}};
+                list.Add(objeto);
             }
+
+            return list;
         }
     }
 
