@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using api_tecn_emergentes.Auxiliar;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using api_tecn_emergentes.Models;
+using System;
 
 namespace api_tecn_emergentes.Controllers
 {
@@ -14,30 +9,29 @@ namespace api_tecn_emergentes.Controllers
     [Route("api/Reactores/[action]")]
     public class ReactoresController : Controller
     {
-        signalr_hub hub = new signalr_hub();
         DataAccess data = new DataAccess();
         api_tecn_emergentes.Models.RabbitMQ rq = new api_tecn_emergentes.Models.RabbitMQ();
 
-        private async void PushActivar(bool _value)
+        //Metodo de activacion, envia JSON a placas a traves de un channel RabbitMQ
+        private void PushActivar(PushData _data, string _queue)
         { 
-            if (_value) { rq.PostMessage("","message"); }
-            else { await hub.EnviarMsj("TODOS", "{\"reactor\":\"riego\",\"valor\":false}"); }
+            string _jsonToSend = Newtonsoft.Json.JsonConvert.SerializeObject(_data);
+            rq.PostMessage(_jsonToSend,_queue); 
         }
-
         
-        //Llamada para activar/desactivar riego desde front end
-        [HttpPost("id={_id_entity}+valor={_value}")]
-        public JObject Riego(int _id_entity, bool _value)
+        //Llamada para activar/desactivar reactores desde front end
+        [HttpPost()]
+        public JObject Manual([FromBody] PushData _data)
         {
-            PushActivaRiego(_value);
-            return _value?JObject.Parse("{\"reactor\":\"riego\",\"valor\":true}"):JObject.Parse("{\"reactor\":\"riego\",\"valor\":false}");
-        }
-        //Llamada para activar/desactivar ventilacion desde front end
-        [HttpPost("id={_id_entity}+valor={_value}")]
-        public JObject Ventilacion(int _id_entity, bool _value)
-        {
-            PushActivaVentilacion(_value);
-            return _value ? JObject.Parse("{\"reactor\":\"climatizacion\",\"valor\":true}") : JObject.Parse("{\"reactor\":\"climatizacion\",\"valor\":false}");
+            try
+            {
+                PushActivar(_data,"message");
+                return JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject("{\"estado\":\"OK\",\"mensaje\":\"notificacion enviada correctamente\"}"));
+            }
+            catch (Exception ex)
+            {
+                return JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(ex));
+            }
         }
     }
 }
