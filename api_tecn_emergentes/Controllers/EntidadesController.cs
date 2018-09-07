@@ -11,6 +11,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace api_tecn_emergentes.Controllers
 {
@@ -64,12 +65,15 @@ namespace api_tecn_emergentes.Controllers
             e1.sensores.hum = new Humidity();
 
             //Carga de datos de entidad nueva
-            e1.id_entidad = _preEntElements[0].Value.ToInt32();;
+            e1.id_entidad = _preEntElements[0].Value.ToInt32();
             e1.nombre = e.nombre;
             //Reactores 
-            e1.reactores.Add(new Reactor() { tipo = "Riego", estado = false });
-            e1.reactores.Add(new Reactor() { tipo = "Climatizador", estado = false });
+            IPAddress _ipr = IPAddress.Parse(_preEntElements[1].Value.ToString());
+            e1.reactores.Add(new Reactor() { tipo = "Riego", estado = false, ip_reactor = _ipr});
+            e1.reactores.Add(new Reactor() { tipo = "Climatizador", estado = false, ip_reactor = _ipr });
             //Sensores
+            IPAddress _ips = IPAddress.Parse(_preEntElements[2].Value.ToString());
+            e1.sensores.ip_sensor = _ips;
             e1.sensores.temp.max = e.temp_max;
             e1.sensores.temp.min = e.temp_min;
             e1.sensores.hum.max = e.hum_max;
