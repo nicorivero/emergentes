@@ -47,7 +47,9 @@ namespace api_tecn_emergentes.Controllers
         [HttpDelete("id={_id_entity}")]
         public string Eliminar (int _id_entity)
         {
-            return data.DeleteDocument("Entidades", "id_entidad", _id_entity);
+            string _responsep = data.DeleteDocument("PreEntidades","_id", _id_entity);
+            string _response = data.DeleteDocument("Entidades", "id_entidad", _id_entity);
+            return _response + " && " + _responsep ;
         }
         
         //Cargar una nueva entidad
