@@ -53,27 +53,33 @@ namespace api_tecn_emergentes.Controllers
         [HttpPost]
         public string Crear([FromBody] EntidadSimple e)
         {
+            //Recuperar pre-entidad correspondiente
+            var _preEntElements = data.GetDocument("_id",e.id_precarga,"PreEntidades").Elements.ToList();
+            
+            //Crear instancias de nueva variable de entidad
             Entidades e1 = new Entidades();
             e1.reactores = new List<Reactor>();
             e1.sensores = new Sensor();
             e1.sensores.temp = new Temperature();
             e1.sensores.hum = new Humidity();
 
-            e1.id_entidad = e.id_precarga;
-            PrecargaController pre = new PrecargaController();
-            //string mensaje = pre.Eliminar(e.id_precarga);
-
+            //Carga de datos de entidad nueva
+            e1.id_entidad = _preEntElements[0].Value.ToInt32();;
             e1.nombre = e.nombre;
-            //REVISAR ESTO
-            // e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Riego", estado = false });
-            // e1.reactores.Add(new Reactor() { ip_reactor = e.ip_reactores, tipo = "Climatizador", estado = false });
-            // e1.sensores.ip_sensor = e.ip_sensores;
+            //Reactores 
+            e1.reactores.Add(new Reactor() { tipo = "Riego", estado = false });
+            e1.reactores.Add(new Reactor() { tipo = "Climatizador", estado = false });
+            //Sensores
             e1.sensores.temp.max = e.temp_max;
             e1.sensores.temp.min = e.temp_min;
             e1.sensores.hum.max = e.hum_max;
             e1.sensores.hum.min = e.hum_min;
-            string response = data.InsertDocument("Entidades",e1.ToBsonDocument());
-            return response + e1.id_entidad.ToString();
+            //Insercion nueva entidad completa
+            string _response = data.InsertDocument("Entidades",e1.ToBsonDocument());
+            //Actualizacion de pre-entidad marcandola como entidad activa
+            data.UpdateDocument(data.GetCollection("PreEntidades"), "activo", false, "activo", true);
+            //Devolucion de respuesta con confirmacion de insercion o error encontrado.
+            return "{\"result\": \"" + _response  + "\",\"_id\":\"" + e1.id_entidad.ToString() + "\"}";
         }
     }
 
