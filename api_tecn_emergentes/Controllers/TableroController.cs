@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using api_tecn_emergentes.Models;
-using api_tecn_emergentes.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 
 namespace api_tecn_emergentes.Controllers

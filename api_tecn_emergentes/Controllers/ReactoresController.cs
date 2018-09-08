@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Converters;
 using api_tecn_emergentes.Models;
-using System;
 using Newtonsoft.Json;
 
 namespace api_tecn_emergentes.Controllers
