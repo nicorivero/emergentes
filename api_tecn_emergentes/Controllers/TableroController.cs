@@ -19,21 +19,17 @@ namespace api_tecn_emergentes.Controllers
         public List<JObject> Get()
         {
             List<JObject> list = new List<JObject>();
+            List<BsonDocument> _bsonLecturas = data.GetDocsWithProjection("UltimasLecturas", new string[] { "_id" });
+            List<JObject> _jsonLecturas = new List<JObject>();
+            _bsonLecturas.ForEach(d => _jsonLecturas.Add(JObject.Parse(d.ToJson())));
             
-            List<BsonDocument> _bsonLecturas = data.GetDocsWithProjection("Ultimas-Lecturas", new string[] { "_id" });
-            List<JObject> _formattedLecturas = new List<JObject>();
-            foreach (BsonDocument _bdoc in _bsonLecturas)
+            foreach (JObject _formatted in _jsonLecturas)
             {
-                JObject jdoc = JObject.Parse(_bdoc.ToJson());
-                _formattedLecturas.Add(jdoc);
-            }
-            
-            foreach (JObject _formatted in _formattedLecturas)
-            {
-                int _id_entity = int.Parse(_formatted.SelectToken("id_entidad").ToString());
-                double temp = double.Parse(_formatted.SelectToken("temperatura").ToString());
-                double hum = double.Parse(_formatted.SelectToken("humedad").ToString());
-
+                int _id_entity = int.Parse(_formatted.SelectToken("_id").ToString());
+                double temp = double.Parse(_formatted.SelectToken("temp").ToString());
+                double hum = double.Parse(_formatted.SelectToken("hum").ToString());
+                
+                //La coleccion Parametros no existe como tal, se integro con las entidades. Cambiar por datos de sensores en entidades
                 var _document = data.GetDocsWithProjection("Parametros", new string[] { "_id"}, "id_entidad", _id_entity).ToJson();
                 JObject _doc = JObject.Parse(_document);
 

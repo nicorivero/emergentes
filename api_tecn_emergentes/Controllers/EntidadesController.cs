@@ -34,13 +34,9 @@ namespace api_tecn_emergentes.Controllers
         public List<JObject> Todos()
         {
             List<BsonDocument> _bsonlist = data.GetDocsWithProjection("Entidades", new string[] { "_id" });
-            List<JObject> _formattedList = new List<JObject>();
-            foreach (BsonDocument _bdoc in _bsonlist)
-            {
-                JObject jdoc = JObject.Parse(_bdoc.ToJson());
-                _formattedList.Add(jdoc);
-            }
-            return _formattedList;
+            List<JObject> _jsonList = new List<JObject>();
+            _bsonlist.ForEach(d => _jsonList.Add(JObject.Parse(d.ToJson())));
+            return _jsonList;
         }
 
         //Eliminar una entidad
@@ -49,6 +45,8 @@ namespace api_tecn_emergentes.Controllers
         {
             string _responsep = data.DeleteDocument("PreEntidades","_id", _id_entity);
             string _response = data.DeleteDocument("Entidades", "id_entidad", _id_entity);
+            //Eliminar Lecturas para mantener integridad referencial de la base aunque sea documental
+            //--CODIGO PARA ELIMINAR LECTURAS
             return _response + " && " + _responsep ;
         }
         
@@ -82,10 +80,18 @@ namespace api_tecn_emergentes.Controllers
             e1.sensores.hum.min = e.hum_min;
             //Insercion nueva entidad completa
             string _response = data.InsertDocument("Entidades",e1.ToBsonDocument());
-            //Actualizacion de pre-entidad marcandola como entidad activa
+            //Actualizacion de pre-entidad marcandola como entidad activa.
             data.UpdateDocument(data.GetCollection("PreEntidades"), "activo", false, "activo", true);
+
+            //Carga de entidad en ultimas lecturas para su mantenimiento.
+            BsonDocument _eUltimaLectura = new BsonDocument();
+            _eUltimaLectura.Add(new BsonElement("_id", e1.id_entidad));
+            _eUltimaLectura.Add(new BsonElement("temp", 0));
+            _eUltimaLectura.Add(new BsonElement("hum", 0));
+            data.InsertDocument("UltimasLecturas",_eUltimaLectura);
+            
             //Devolucion de respuesta con confirmacion de insercion o error encontrado.
-            return "{\"result\": \"" + _response  + "\",\"_id\":\"" + e1.id_entidad.ToString() + "\"}";
+            return Newtonsoft.Json.JsonConvert.SerializeObject("{\"result\": \"" + _response  + "\",\"_id\":\"" + e1.id_entidad.ToString() + "\"}");
         }
     }
 

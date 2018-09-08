@@ -6,6 +6,7 @@ using api_tecn_emergentes.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace api_tecn_emergentes.Controllers
@@ -15,17 +16,27 @@ namespace api_tecn_emergentes.Controllers
     public class LecturasController : Controller
     {
         DataAccess data = new DataAccess();
+        Models.RabbitMQ rq = new Models.RabbitMQ();
 
         [HttpPost]
         
         public string Insertar([FromBody] Lecturas _lectura)
         {
-            //Update Ultimas-Lecturas
+            //Update UltimasLecturas
             
             //Activar/Desactivar Riego/Ventailacion
             BsonDocument _docEntidad = data.GetDocsWithProjection("Entidades", new string[]{"_id"}, "id_entidad", _lectura.id_entidad).First();
             List<BsonElement> lista =_docEntidad.Elements.ToList();
-            
+            //VARIABLES MOCK PARA TESTING
+            double tmax = 30.5;
+            double tmin = 27.2;
+            double hmax = 75.7;
+            double hmin = 52.2;
+            bool _clima = _lectura.temperatura > tmax? true:_lectura.temperatura < tmin? false:;
+            bool _riego = _lectura.humedad < hmin? true:_lectura.humedad>hmax?false;
+            rq.PostMessage(JsonConvert.SerializeObject(new PushData(){
+                id_entidad=_lectura.id_entidad, riego=_riego, ventilacion=_clima}),"message");
+
             //Grabar Lectura en Historico
             string response = data.InsertDocument("Lecturas", _lectura.ToBsonDocument());
             return response;

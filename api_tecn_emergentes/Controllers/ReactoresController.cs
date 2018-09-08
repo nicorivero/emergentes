@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Converters;
 using api_tecn_emergentes.Models;
 using System;
+using Newtonsoft.Json;
 
 namespace api_tecn_emergentes.Controllers
 {
@@ -15,7 +17,7 @@ namespace api_tecn_emergentes.Controllers
         //Metodo de activacion, envia JSON a placas a traves de un channel RabbitMQ
         private void PushActivar(PushData _data, string _queue)
         { 
-            string _jsonToSend = Newtonsoft.Json.JsonConvert.SerializeObject(_data);
+            string _jsonToSend = JsonConvert.SerializeObject(_data);
             rq.PostMessage(_jsonToSend,_queue); 
         }
         
@@ -26,11 +28,11 @@ namespace api_tecn_emergentes.Controllers
             try
             {
                 PushActivar(_data,"message");
-                return JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject("{\"estado\":\"OK\",\"mensaje\":\"notificacion enviada correctamente\"}"));
+                return JObject.Parse(JsonConvert.SerializeObject("{\"estado\":\"OK\",\"mensaje\":\"notificacion enviada correctamente\"}"));
             }
             catch (Exception ex)
             {
-                return JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(ex));
+                return JObject.Parse(JsonConvert.SerializeObject(ex));
             }
         }
     }
