@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using api_tecn_emergentes.Models;
+using api_tecn_emergentes.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -13,7 +14,7 @@ namespace api_tecn_emergentes.Controllers
     public class TableroController : Controller
     {
         private DataAccess data = new DataAccess();
-        
+        private SensoresController _sensoresData = new SensoresController();
         //Obtener toda la informacion de las entidades
         [HttpGet]
         public List<JObject> Get()
@@ -28,15 +29,19 @@ namespace api_tecn_emergentes.Controllers
                 int _id_entity = int.Parse(_formatted.SelectToken("_id").ToString());
                 double temp = double.Parse(_formatted.SelectToken("temp").ToString());
                 double hum = double.Parse(_formatted.SelectToken("hum").ToString());
-                
-                //La coleccion Parametros no existe como tal, se integro con las entidades. Cambiar por datos de sensores en entidades
-                var _document = data.GetDocsWithProjection("Parametros", new string[] { "_id"}, "id_entidad", _id_entity).ToJson();
-                JObject _doc = JObject.Parse(_document);
 
-                double tempMax = double.Parse(_doc.SelectToken("tempMax").ToString());
-                double tempMin = double.Parse(_doc.SelectToken("tempMin").ToString());
-                double humMax = double.Parse(_doc.SelectToken("humMax").ToString());
-                double humMin = double.Parse(_doc.SelectToken("humMin").ToString());
+                //La coleccion Parametros no existe como tal, se integro con las entidades. Cambiar por datos de sensores en entidades
+                //string _document = data.GetDocsWithProjection("Entidades", new string[] { "_id"}, "id_entidad", _id_entity).ToJson();
+                //Se utilizo parametros get del controlador sensores para recuperar la info. Revisar estructura de tokens.
+                JObject _doc = _sensoresData.Parametros(_id_entity);
+                JToken _tokenMain = _doc.SelectToken("sensores");
+                JToken _tokenTemp = _tokenMain.SelectToken("temp");
+                JToken _tokenHum = _tokenMain.SelectToken("hum");
+
+                double tempMax = double.Parse(_tokenTemp.SelectToken("max").ToString());
+                double tempMin = double.Parse(_tokenTemp.SelectToken("min").ToString());
+                double humMax = double.Parse(_tokenHum.SelectToken("max").ToString());
+                double humMin = double.Parse(_tokenHum.SelectToken("min").ToString());
 
                 //Calculamos el color de la temperatura
                 int colorTemp = 0;
@@ -56,8 +61,8 @@ namespace api_tecn_emergentes.Controllers
                 else if (hum > humMax)
                     colorTemp = 5;
 
-                JObject objeto = new JObject{{"id_entidad", _id_entity}, {"temperatura", temp}, {"humedad", hum}, {"colorTemp", colorTemp}, {"colorHum", colorHum}};
-                list.Add(objeto);
+                JObject _objTablero = new JObject{{"id_entidad", _id_entity}, {"temperatura", temp}, {"humedad", hum}, {"colorTemp", colorTemp}, {"colorHum", colorHum}};
+                list.Add(_objTablero);
             }
 
             return list;

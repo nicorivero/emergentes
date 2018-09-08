@@ -32,10 +32,10 @@ namespace api_tecn_emergentes.Controllers
             double tmin = 27.2;
             double hmax = 75.7;
             double hmin = 52.2;
-            bool _clima = _lectura.temperatura > tmax? true:_lectura.temperatura < tmin? false:;
-            bool _riego = _lectura.humedad < hmin? true:_lectura.humedad>hmax?false;
-            rq.PostMessage(JsonConvert.SerializeObject(new PushData(){
-                id_entidad=_lectura.id_entidad, riego=_riego, ventilacion=_clima}),"message");
+            // bool _clima = _lectura.temperatura > tmax? true:_lectura.temperatura < tmin? false:;
+            // bool _riego = _lectura.humedad < hmin? true:_lectura.humedad>hmax?false;
+            // rq.PostMessage(JsonConvert.SerializeObject(new PushData(){
+            //     id_entidad=_lectura.id_entidad, riego=_riego, ventilacion=_clima}),"message");
 
             //Grabar Lectura en Historico
             string response = data.InsertDocument("Lecturas", _lectura.ToBsonDocument());
