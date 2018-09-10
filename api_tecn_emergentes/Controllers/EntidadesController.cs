@@ -88,7 +88,6 @@ namespace api_tecn_emergentes.Controllers
             data.InsertDocument("UltimasLecturas",_eUltimaLectura);
             
             //Devolucion de respuesta con confirmacion de insercion o error encontrado.
-            //REVISAR FORMATO EN QUE DEVUELVE
             return JObject.Parse("{\"result\": \"" + _response  + "\",\"_id\":\"" + e1.id_entidad.ToString() + "\"}");
         }
     }

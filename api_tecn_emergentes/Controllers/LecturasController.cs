@@ -35,19 +35,18 @@ namespace api_tecn_emergentes.Controllers
             //Activar/Desactivar Riego/Ventailacion
             BsonDocument _docEntidad = data.GetDocsWithProjection("Entidades", new string[]{"_id"}, "id_entidad", _lectura.id_entidad).First();
             JObject.Parse(_docEntidad.ToJson());
+            
             SensoresController _sense_data = new SensoresController();
-            var _param = JObject.Parse(_sense_data.Parametros(_lectura.id_entidad).ToJson()).SelectToken("sensores");
-            //VARIABLES MOCK PARA TESTING
-            var _temp_token = _param.SelectToken("temp");
-            double tmax = double.Parse(_temp_token.SelectToken("max").ToString());
-            double tmin = double.Parse(_temp_token.SelectToken("min").ToString());
-            var _hum_token = _param.SelectToken("hum");
-            double hmax = double.Parse(_hum_token.SelectToken("max").ToString());
-            double hmin = double.Parse(_hum_token.SelectToken("max").ToString());
-            bool _preserve = false;
-            var _clima = _lectura.temperatura > tmax? true:_lectura.temperatura < tmin? false:_preserve=true;
-            var _riego = _lectura.humedad < hmin? true:_lectura.humedad>hmax?false: _preserve = true;
-            if (!_preserve)
+            var _param = JObject.Parse(_sense_data.Parametros(_lectura.id_entidad).ToString()).GetValue("sensores");
+            double tmax = double.Parse(_param.SelectToken("temp.max").ToString());
+            double tmin = double.Parse(_param.SelectToken("temp.min").ToString());
+            double hmax = double.Parse(_param.SelectToken("hum.max").ToString());
+            double hmin = double.Parse(_param.SelectToken("hum.min").ToString());
+
+            bool _preserve_temp = false, _preserve_hum = false;
+            bool _clima = _lectura.temperatura > tmax? true:_lectura.temperatura < tmin? false:_preserve_temp = true;
+            bool _riego = _lectura.humedad < hmin? true:_lectura.humedad>hmax?false: _preserve_hum = true;
+            if (!_preserve_temp || !_preserve_hum)
             {
                 rq.PostMessage(JsonConvert.SerializeObject(new PushData(){  id_entidad=_lectura.id_entidad, 
                                                                             riego = _riego, 

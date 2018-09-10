@@ -17,7 +17,7 @@ namespace api_tecn_emergentes.Controllers
         public List<JObject> Get()
         {
             List<JObject> list = new List<JObject>();
-            List<BsonDocument> _bsonLecturas = data.GetDocsWithProjection("UltimasLecturas", new string[] { "_id" });
+            List<BsonDocument> _bsonLecturas = data.GetAllDocuments("UltimasLecturas");
             List<JObject> _jsonLecturas = new List<JObject>();
             _bsonLecturas.ForEach(d => _jsonLecturas.Add(JObject.Parse(d.ToJson())));
             
@@ -30,15 +30,13 @@ namespace api_tecn_emergentes.Controllers
                 //La coleccion Parametros no existe como tal, se integro con las entidades. Cambiar por datos de sensores en entidades
                 //string _document = data.GetDocsWithProjection("Entidades", new string[] { "_id"}, "id_entidad", _id_entity).ToJson();
                 //Se utilizo parametros get del controlador sensores para recuperar la info. Revisar estructura de tokens.
-                JObject _doc = _sensoresData.Parametros(_id_entity);
-                JToken _tokenMain = _doc.SelectToken("sensores");
-                JToken _tokenTemp = _tokenMain.SelectToken("temp");
-                JToken _tokenHum = _tokenMain.SelectToken("hum");
-
-                double tempMax = double.Parse(_tokenTemp.SelectToken("max").ToString());
-                double tempMin = double.Parse(_tokenTemp.SelectToken("min").ToString());
-                double humMax = double.Parse(_tokenHum.SelectToken("max").ToString());
-                double humMin = double.Parse(_tokenHum.SelectToken("min").ToString());
+                JObject _doc = JObject.Parse(_sensoresData.Parametros(_id_entity).ToString());
+                JToken _param = JObject.Parse(_sensoresData.Parametros(_id_entity).ToString()).GetValue("sensores");
+                
+                double tempMax = double.Parse(_param.SelectToken("temp.max").ToString());;
+                double tempMin = double.Parse(_param.SelectToken("temp.min").ToString());;
+                double humMax = double.Parse(_param.SelectToken("hum.max").ToString());
+                double humMin = double.Parse(_param.SelectToken("hum.min").ToString());;
 
                 //Calculamos el color de la temperatura
                 int colorTemp = 0;
