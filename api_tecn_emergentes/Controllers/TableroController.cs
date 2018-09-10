@@ -57,7 +57,7 @@ namespace api_tecn_emergentes.Controllers
                     colorTemp = 4;
                 else if (hum > humMax)
                     colorTemp = 5;
-
+                //Revisar el objeto devuelto.
                 JObject _objTablero = new JObject{{"id_entidad", _id_entity}, {"temperatura", temp}, {"humedad", hum}, {"colorTemp", colorTemp}, {"colorHum", colorHum}};
                 list.Add(_objTablero);
             }

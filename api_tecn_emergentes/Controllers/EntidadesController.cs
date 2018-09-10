@@ -46,7 +46,7 @@ namespace api_tecn_emergentes.Controllers
         
         //Cargar una nueva entidad
         [HttpPost]
-        public string Crear([FromBody] EntidadSimple e)
+        public JObject Crear([FromBody] EntidadSimple e)
         {
             //Recuperar pre-entidad correspondiente
             var _preEntElements = data.GetDocument("_id",e.id_precarga,"PreEntidades").Elements.ToList();
@@ -65,6 +65,7 @@ namespace api_tecn_emergentes.Controllers
             IPAddress _ipr = IPAddress.Parse(_preEntElements[1].Value.ToString());
             e1.reactores.Add(new Reactor() { tipo = "Riego", estado = false, ip_reactor = _ipr});
             e1.reactores.Add(new Reactor() { tipo = "Climatizador", estado = false, ip_reactor = _ipr });
+
             //Sensores
             IPAddress _ips = IPAddress.Parse(_preEntElements[2].Value.ToString());
             e1.sensores.ip_sensor = _ips;
@@ -72,8 +73,10 @@ namespace api_tecn_emergentes.Controllers
             e1.sensores.temp.min = e.temp_min;
             e1.sensores.hum.max = e.hum_max;
             e1.sensores.hum.min = e.hum_min;
+            
             //Insercion nueva entidad completa
             string _response = data.InsertDocument("Entidades",e1.ToBsonDocument());
+            
             //Actualizacion de pre-entidad marcandola como entidad activa.
             data.UpdateDocument(data.GetCollection("PreEntidades"), "activo", false, "activo", true);
 
@@ -85,9 +88,8 @@ namespace api_tecn_emergentes.Controllers
             data.InsertDocument("UltimasLecturas",_eUltimaLectura);
             
             //Devolucion de respuesta con confirmacion de insercion o error encontrado.
-            return Newtonsoft.Json.JsonConvert.SerializeObject("{\"result\": \"" + _response  + "\",\"_id\":\"" + e1.id_entidad.ToString() + "\"}");
+            //REVISAR FORMATO EN QUE DEVUELVE
+            return JObject.Parse("{\"result\": \"" + _response  + "\",\"_id\":\"" + e1.id_entidad.ToString() + "\"}");
         }
     }
-
-    
 }
