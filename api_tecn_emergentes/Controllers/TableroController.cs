@@ -30,14 +30,14 @@ namespace api_tecn_emergentes.Controllers
                 //La coleccion Parametros no existe como tal, se integro con las entidades. Cambiar por datos de sensores en entidades
                 //string _document = data.GetDocsWithProjection("Entidades", new string[] { "_id"}, "id_entidad", _id_entity).ToJson();
                 //Se utilizo parametros get del controlador sensores para recuperar la info. Revisar estructura de tokens.
-                JObject _doc = JObject.Parse(_sensoresData.Parametros(_id_entity).ToString());
                 JToken _param = JObject.Parse(_sensoresData.Parametros(_id_entity).ToString()).GetValue("sensores");
                 
-                double tempMax = double.Parse(_param.SelectToken("temp.max").ToString());;
-                double tempMin = double.Parse(_param.SelectToken("temp.min").ToString());;
+                double tempMax = double.Parse(_param.SelectToken("temp.max").ToString());
+                double tempMin = double.Parse(_param.SelectToken("temp.min").ToString());
                 double humMax = double.Parse(_param.SelectToken("hum.max").ToString());
-                double humMin = double.Parse(_param.SelectToken("hum.min").ToString());;
+                double humMin = double.Parse(_param.SelectToken("hum.min").ToString());
 
+                //REVISAR ESTO!
                 //Calculamos el color de la temperatura
                 int colorTemp = 0;
                 if (temp >= tempMin && temp <= tempMax)
@@ -50,11 +50,11 @@ namespace api_tecn_emergentes.Controllers
                 //Calculamos el color de la humedad
                 int colorHum = 0;
                 if (hum >= humMin && hum <= humMax)
-                    colorTemp = 2;
+                    colorHum = 2;
                 else if (hum < humMin)
-                    colorTemp = 4;
+                    colorHum = 4;
                 else if (hum > humMax)
-                    colorTemp = 5;
+                    colorHum = 5;
                 //Revisar el objeto devuelto.
                 JObject _objTablero = new JObject{{"id_entidad", _id_entity}, {"temperatura", temp}, {"humedad", hum}, {"colorTemp", colorTemp}, {"colorHum", colorHum}};
                 list.Add(_objTablero);
