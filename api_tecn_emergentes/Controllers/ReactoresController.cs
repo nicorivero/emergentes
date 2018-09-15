@@ -27,7 +27,7 @@ namespace api_tecn_emergentes.Controllers
             try
             {
                 PushActivar(_data,"message");
-                return JObject.Parse(JsonConvert.SerializeObject("{\"estado\":\"OK\",\"mensaje\":\"notificacion enviada correctamente\"}"));
+                return JObject.Parse("{\"estado\":\"OK\",\"mensaje\":\"notificacion enviada correctamente\"}");
             }
             catch (Exception ex)
             {

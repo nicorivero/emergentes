@@ -33,8 +33,7 @@ namespace api_tecn_emergentes.Controllers
             data.UpdateDocument(collection,"_id", _lectura.id_entidad, "hum", _lectura.humedad);
 
             //Activar/Desactivar Riego/Ventailacion
-            BsonDocument _docEntidad = data.GetDocsWithProjection("Entidades", new string[]{"_id"}, "id_entidad", _lectura.id_entidad).First();
-            JObject.Parse(_docEntidad.ToJson());
+            JObject _entidad = JObject.Parse(data.GetDocsWithProjection("Entidades", new string[]{"_id"}, "id_entidad", _lectura.id_entidad).First().ToJson());
             
             SensoresController _sense_data = new SensoresController();
             var _param = JObject.Parse(_sense_data.Parametros(_lectura.id_entidad).ToString()).GetValue("sensores");
@@ -42,16 +41,21 @@ namespace api_tecn_emergentes.Controllers
             double tmin = double.Parse(_param.SelectToken("temp.min").ToString());
             double hmax = double.Parse(_param.SelectToken("hum.max").ToString());
             double hmin = double.Parse(_param.SelectToken("hum.min").ToString());
+            
+            //Obtener parametros actuales de entidad
+            JToken _reactoresEntidad = _entidad.GetValue("reactores");
+            bool _riegoCurrentState = bool.Parse(JObject.Parse(_reactoresEntidad.First().ToString()).GetValue("estado").ToString());
+            bool _ventilacionCurrentState = bool.Parse(JObject.Parse(_reactoresEntidad.Last().ToString()).GetValue("estado").ToString());
 
-            bool _preserve_temp = false, _preserve_hum = false;
-            bool _clima = _lectura.temperatura > tmax? true:_lectura.temperatura < tmin? false:_preserve_temp = true;
-            bool _riego = _lectura.humedad < hmin? true:_lectura.humedad>hmax?false: _preserve_hum = true;
-            if (!_preserve_temp || !_preserve_hum)
-            {
-                rq.PostMessage(JsonConvert.SerializeObject(new PushData(){  id_entidad=_lectura.id_entidad, 
-                                                                            riego = _riego, 
-                                                                            ventilacion = _clima }),"message");
-            }
+            //Parametros para mensaje a placas
+            bool _clima = _lectura.temperatura > tmax? true : _lectura.temperatura < tmin? false : _ventilacionCurrentState;
+            bool _riego = _lectura.humedad < hmin? true : _lectura.humedad>hmax? false : _riegoCurrentState;
+            
+            //Enviar mensaje a entidad fisica
+            rq.PostMessage(JsonConvert.SerializeObject(new PushData(){  id_entidad=_lectura.id_entidad, 
+                                                                        riego = _riego, 
+                                                                        ventilacion = _clima }),"message");
+            //Actualizar estado actual de reactores en entidad
             
             //Grabar Lectura en Historico
             string response = data.InsertDocument("Lecturas", _lectura.ToBsonDocument());
