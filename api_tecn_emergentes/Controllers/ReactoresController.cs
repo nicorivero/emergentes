@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using api_tecn_emergentes.Auxiliar;
 using Newtonsoft.Json.Linq;
 using api_tecn_emergentes.Models;
+using Newtonsoft.Json;
 
 namespace api_tecn_emergentes.Controllers
 {
@@ -14,34 +10,29 @@ namespace api_tecn_emergentes.Controllers
     [Route("api/Reactores/[action]")]
     public class ReactoresController : Controller
     {
-        signalr_hub hub = new signalr_hub();
         DataAccess data = new DataAccess();
+        api_tecn_emergentes.Models.RabbitMQ rq = new api_tecn_emergentes.Models.RabbitMQ();
 
-        //Inicialmente la notificacion se distribuye a todos los clientes y la toma quien precisa
-        private async void PushActivaRiego(bool _value)
-        {
-            if (_value) { await hub.EnviarMsj("TODOS", "{\"reactor\":\"riego\",\"valor\":true}"); }
-            else { await hub.EnviarMsj("TODOS", "{\"reactor\":\"riego\",\"valor\":false}"); }
+        //Metodo de activacion, envia JSON a placas a traves de un channel RabbitMQ
+        private void PushActivar(PushData _data, string _queue)
+        { 
+            string _jsonToSend = JsonConvert.SerializeObject(_data);
+            rq.PostMessage(_jsonToSend,_queue); 
         }
-
-        private async void PushActivaVentilacion(bool _value)
+        
+        //Llamada para activar/desactivar reactores desde front end
+        [HttpPost()]
+        public JObject Manual([FromBody] PushData _data)
         {
-            if (_value) { await hub.EnviarMsj("TODOS", "{\"reactor\":\"climatizacion\",\"valor\":true}"); }
-            else { await hub.EnviarMsj("TODOS", "{\"reactor\":\"climatizacion\",\"valor\":false}"); }
-        }
-        //Llamada para activar/desactivar riego desde front end
-        [HttpPost("id={_id_entity}+valor={_value}")]
-        public JObject Riego(int _id_entity, bool _value)
-        {
-            PushActivaRiego(_value);
-            return _value?JObject.Parse("{\"reactor\":\"riego\",\"valor\":true}"):JObject.Parse("{\"reactor\":\"riego\",\"valor\":false}");
-        }
-        //Llamada para activar/desactivar ventilacion desde front end
-        [HttpPost("id={_id_entity}+valor={_value}")]
-        public JObject Ventilacion(int _id_entity, bool _value)
-        {
-            PushActivaVentilacion(_value);
-            return _value ? JObject.Parse("{\"reactor\":\"climatizacion\",\"valor\":true}") : JObject.Parse("{\"reactor\":\"climatizacion\",\"valor\":false}");
+            try
+            {
+                PushActivar(_data,"message");
+                return JObject.Parse("{\"estado\":\"OK\",\"mensaje\":\"notificacion enviada correctamente\"}");
+            }
+            catch (Exception ex)
+            {
+                return JObject.Parse(JsonConvert.SerializeObject(ex));
+            }
         }
     }
 }

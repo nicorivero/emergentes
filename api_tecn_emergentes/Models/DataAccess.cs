@@ -32,12 +32,28 @@ namespace api_tecn_emergentes.Models
             return _documentsList;
         }
 
+        public List<BsonDocument> GetDocumentsWithFilter<T>(string _collection_name, string _filter_field, T _filter_value)
+        {
+            var _filter = Builders<BsonDocument>.Filter.Eq(_filter_field, _filter_value);
+            var _collection = GetCollection(_collection_name);
+            var _documentsList = _collection.Find(_filter).ToList();
+            return _documentsList;
+        }
+
         //Obtiene un documento particular pasandole como parametro el campo a filtrar, el valor y el nombre de la coleccion.
         public BsonDocument GetDocument(string _field, int _value, string _collection_name)
         {
             var filter = Builders<BsonDocument>.Filter.Eq(_field, _value);
-            var document = GetCollection(_collection_name).Find(filter).First();
-            return document;
+
+            if (GetCollection(_collection_name).Find(filter).Limit(1).CountDocuments() != 0)
+            {
+                var document = GetCollection(_collection_name).Find(filter).First();
+                return document;
+            }
+            else
+            {
+                return ErrorDoc(0,"El documento solicitado no existe"); 
+            }
         }
 
         public List<BsonDocument> GetDocsWithProjection(string _collectionName, string[] _ignoreFields, string _filterField = "", int _filterValue = -1)
@@ -98,6 +114,16 @@ namespace api_tecn_emergentes.Models
             {
                 return "Ha ocurrido un error al eliminar. Detalle:" + ex.Message;
             }
+        }
+
+        private BsonDocument ErrorDoc(int _code, string _text)
+        {
+            BsonDocument _errDoc = new BsonDocument();
+            BsonElement _e1 = new BsonElement("code", _code);
+            BsonElement _msg = new BsonElement("msg", _text);
+            _errDoc.Add(_e1);
+            _errDoc.Add(_msg);
+            return _errDoc;
         }
     }
 }
