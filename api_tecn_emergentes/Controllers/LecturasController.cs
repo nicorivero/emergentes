@@ -6,7 +6,6 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using api_tecn_emergentes.Controllers;
 
 namespace api_tecn_emergentes.Controllers
 {

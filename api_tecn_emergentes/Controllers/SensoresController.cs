@@ -21,24 +21,25 @@ namespace api_tecn_emergentes.Controllers
             var jsonresult = Newtonsoft.Json.Linq.JObject.Parse(result.First().ToJson());
             return jsonresult;
         }
+        
         //Actualizacion de Parametros de Temperatura/Humedad
 
-        #region UpdateParameters
-
-        [HttpPut("id={id_entity}/tmax={tmax}/tmin={tmin}")]
-        public void SetTemperatura(int id_entity ,double tmax, double tmin)
+        [HttpPut]
+        public void SetTemperatura([FromBody] Parametros _dataToUpdate)
         {
             //Revisar Metodo Update de clase DataAccess.
             IMongoCollection<BsonDocument> collection = data.GetCollection("Entidades");
-            data.UpdateDocument(collection, "id_entidad", id_entity, "temp", new Temperature() { min=tmin,max=tmax } );
+            data.UpdateDocument(collection, "id_entidad", _dataToUpdate.id_entidad, "sensores.temp", 
+                                new Temperature() { min = _dataToUpdate.min, max = _dataToUpdate.max } );
         }
 
-        [HttpPut("id={id_entity}/hmax={hmax}/hmin={hmin}")]
-        public void SetHumedad(int id_entity, double hmax, double hmin)
+        [HttpPut]
+        public void SetHumedad([FromBody]Parametros _dataToUpdate)
         {
             IMongoCollection<BsonDocument> collection = data.GetCollection("Entidades");
-            data.UpdateDocument(collection, "id_entidad", id_entity, "hum", new Humidity() { min = hmin, max = hmax });
+            data.UpdateDocument(collection, "id_entidad", _dataToUpdate.id_entidad, "hum", 
+                                new Humidity() { min = _dataToUpdate.min, max = _dataToUpdate.max });
         }
-        #endregion
+        
     }
 }
