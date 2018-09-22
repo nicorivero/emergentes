@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using api_tecn_emergentes.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -45,6 +46,7 @@ namespace api_tecn_emergentes.Controllers
             JToken _reactoresEntidad = _entidad.GetValue("reactores");
             bool _riegoCurrentState = bool.Parse(JObject.Parse(_reactoresEntidad.First().ToString()).GetValue("estado").ToString());
             bool _ventilacionCurrentState = bool.Parse(JObject.Parse(_reactoresEntidad.Last().ToString()).GetValue("estado").ToString());
+            IPAddress ipReactor = IPAddress.Parse(JObject.Parse(_reactoresEntidad.First().ToString()).GetValue("ip_reactor").ToString());
 
             //Parametros para mensaje a placas
             bool _clima = _lectura.temperatura > tmax? true : _lectura.temperatura < tmin? false : _ventilacionCurrentState;
@@ -55,7 +57,12 @@ namespace api_tecn_emergentes.Controllers
                                                                         riego = _riego, 
                                                                         ventilacion = _clima }),"message");
             //Actualizar estado actual de reactores en entidad
-            
+            List<Reactor> reactoresUpdated = new List<Reactor>();
+            reactoresUpdated.Add(new Reactor(){ ip_reactor = ipReactor , tipo = "Riego", estado = _riego});
+            reactoresUpdated.Add(new Reactor(){ ip_reactor = ipReactor , tipo = "Climatizador", estado = _clima});
+            IMongoCollection<BsonDocument> collectionEntidades = data.GetCollection("Entidades");
+            data.UpdateDocument(collectionEntidades, "id_entidad", _lectura.id_entidad, "reactores", 
+                                reactoresUpdated);
             //Grabar Lectura en Historico
             string response = data.InsertDocument("Lecturas", _lectura.ToBsonDocument());
             return response;
