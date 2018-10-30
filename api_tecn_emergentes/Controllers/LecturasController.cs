@@ -48,9 +48,12 @@ namespace api_tecn_emergentes.Controllers
             bool _ventilacionCurrentState = bool.Parse(JObject.Parse(_reactoresEntidad.Last().ToString()).GetValue("estado").ToString());
             IPAddress ipReactor = IPAddress.Parse(JObject.Parse(_reactoresEntidad.First().ToString()).GetValue("ip_reactor").ToString());
 
+            //Logica difusa para encendido de reactores (Actualmente es un promedio nada mas)
+            double diferencialT = tmin + ((tmax - tmin) / 2);
+            double diferencialH = hmin + ((hmax - hmin) / 2);
             //Parametros para mensaje a placas
-            bool _clima = _lectura.temperatura > tmax? true : _lectura.temperatura < tmin? false : _ventilacionCurrentState;
-            bool _riego = _lectura.humedad < hmin? true : _lectura.humedad>hmax? false : _riegoCurrentState;
+            bool _clima = _lectura.temperatura > tmax? true : _lectura.temperatura < diferencialT? false : _ventilacionCurrentState;
+            bool _riego = _lectura.humedad < hmin? true : _lectura.humedad > diferencialH? false : _riegoCurrentState;
             
             //Enviar mensaje a entidad fisica
             rq.PostMessage(JsonConvert.SerializeObject(new PushData(){  id_entidad=_lectura.id_entidad, 
