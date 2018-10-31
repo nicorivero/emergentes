@@ -48,7 +48,7 @@ namespace api_tecn_emergentes.Controllers
             bool _ventilacionCurrentState = bool.Parse(JObject.Parse(_reactoresEntidad.Last().ToString()).GetValue("estado").ToString());
             IPAddress ipReactor = IPAddress.Parse(JObject.Parse(_reactoresEntidad.First().ToString()).GetValue("ip_reactor").ToString());
 
-            //Parametros para mensaje a placas
+            //Parametros para mensaje a placas (REVISAR REGLAS)
             bool _clima = _lectura.temperatura > tmax? true : _lectura.temperatura < tmin? false : _ventilacionCurrentState;
             bool _riego = _lectura.humedad < hmin? true : _lectura.humedad>hmax? false : _riegoCurrentState;
             
